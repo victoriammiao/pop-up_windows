@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>祝福弹窗</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: #111;
+            overflow: hidden;
+            /* 防止滚动条影响随机位置 */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 9999;
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar button {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background: #2d89ef;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .popup {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+            padding: 12px 16px;
+            user-select: none;
+            transform: translateZ(0) scale(0.9);
+            opacity: 0;
+            transition: opacity .25s ease, transform .25s ease;
+            pointer-events: auto;
+        }
+
+        .popup.show {
+            opacity: 1;
+            transform: translateZ(0) scale(1);
+        }
+
+        .msg {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: .5px;
+            white-space: nowrap;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, .25);
+        }
+    </style>
+    <meta name="description" content="点击生成五彩缤纷的祝福弹窗" />
+    <meta property="og:title" content="祝福弹窗" />
+    <meta property="og:description" content="点击生成五彩缤纷的祝福弹窗" />
+    <meta name="theme-color" content="#111" />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <script>
+        const messages = [
+            '想你啦', 'I Miss You', '见一面吧', '要开心噢', '早点休息',
+            '天天好心情', '记得吃饭', '多喝热水', '猪猪最可爱', '抱抱~',
+            '今天也要可爱', '摸摸头', '冲鸭！', '幸运加倍'
+        ];
+        const colorPairs = [
+            ['#e74c3c', 'white'],
+            ['#2980b9', 'white'],
+            ['#27ae60', 'white'],
+            ['#f1c40f', 'black'],
+            ['#8e44ad', 'white'],
+            ['#e67e22', 'white'],
+            ['#ecf0f1', 'black'],
+            ['#2c3e50', 'white'],
+            ['#ff69b4', 'black'],
+            ['#34495e', 'white']
+        ];
+
+        function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function createPopup() {
+            const w = rand(180, 320);
+            const h = rand(90, 160);
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const x = rand(0, Math.max(0, vw - w));
+            const y = rand(0, Math.max(0, vh - h));
+
+            const [bg, fg] = colorPairs[rand(0, colorPairs.length - 1)];
+            const msg = messages[rand(0, messages.length - 1)];
+
+            const el = document.createElement('div');
+            el.className = 'popup';
+            el.style.width = w + 'px';
+            el.style.height = h + 'px';
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            el.style.background = bg;
+            el.style.color = fg;
+
+            const text = document.createElement('div');
+            text.className = 'msg';
+            text.textContent = msg;
+            el.appendChild(text);
+
+            el.addEventListener('click', () => {
+                el.remove();
+            });
+
+            document.body.appendChild(el);
+            requestAnimationFrame(() => el.classList.add('show'));
+
+            // 自动消失
+            const ttl = rand(1500, 3500);
+            setTimeout(() => {
+                el.classList.remove('show');
+                setTimeout(() => el.remove(), 250);
+            }, ttl);
+        }
+
+        function burst(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(createPopup, i * 30);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btnStart').addEventListener('click', () => burst(200));
+        });
+    </script>
+    <!-- 如果你将此文件上传到网页空间（如 GitHub Pages），直接访问链接即可看到效果 -->
+</head>
+
+<body>
+    <div class="toolbar">
+        <button id="btnStart">开始</button>
+    </div>
+</body>
+
+</html>
